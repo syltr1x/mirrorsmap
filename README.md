@@ -2,5 +2,5 @@ This map is made to simplify the search for mirrors as you can see which ones ar
 
 Todo:
 - [ ] Make responsive general UI
-- [ ] Add sort by rating of server
+- [x] Add sort by rating of server
 - [ ] Add filters by protocols
