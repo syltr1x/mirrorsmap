@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arch Linux mirrorsmap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+		<style>
+				* { margin: 0; padding: 0 }
+        #map { height: 100vh; z-index: 0; }
+				#card {
+					position: absolute; 
+					left: 50%;
+					top: 50%;
+					translate: -50% -50%;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					height: 400px;
+					width: 320px;
+					background-color: #eeee;
+					border: 2px solid black;
+					border-radius: 0.8rem;
+					z-index: 2; 
+				}
+				#country {
+					text-decoration: underline;
+					position: absolute;
+					left: 50%;
+					top: 5%;
+					translate: -50% 0%;
+				}
+				#close-btn {
+					position: absolute;
+					left: 2%;
+					top: 2%;
+					translate: 0% 0%;
+					height: 40px;
+					width: 40px;
+					border: none;
+					border-radius: 50%;
+					outline: none;
+					background-color: #933;
+					color: #fff;
+					padding: 6px;
+				}
+				#close-btn > i { font-size: 25px; }
+    </style>
+</head>
+<body>
+		<div id="card">
+			<button id="close-btn" onclick="toggleCard()"><i class="fa-solid fa-times"></i></button>
+			<h1 id="country">Mexico</h1>
+			<ul id="servers">
+				<li>Server 1</li>
+				<li>Server 2</li>
+				<li>Server 3</li>
+			</ul>
+		</div>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+			const serverCounts = {};
+
+			// Load server JSON file
+			fetch('data.json')
+			.then(response => response.json())
+			.then(data => {
+				// Count servers in each country
+				data.urls.forEach(server => {
+					let country = server.country;
+					if (country === "United States") {
+						country = "United States of America"
+					}
+					let url = server.url.split(":")[1]
+					let protocol = server.protocol
+					serverCounts[country] = serverCounts[country] || []
+
+					let existingServer = serverCounts[country].find(s => s.url === url);
+					if (existingServer) {
+						existingServer.protocol.push(protocol) 
+					} else {
+						serverCounts[country].push({"url": url, "protocol": [protocol]});
+					}
+				});
+				loadGeoJSON();
+			})
+			.catch(error => console.error('Error al cargar el archivo JSON:', error));
+
+      // Load GeoJSON file
+			function loadGeoJSON() {
+				fetch('map.geojson')
+					.then(response => response.json())
+					.then(worldGeoJson => {
+						const map = L.map('map').setView([20, 0], 2); // Centrar el mapa
+
+						L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+							maxZoom: 19,
+						}).addTo(map);
+
+						L.geoJson(worldGeoJson, {
+							style: function (feature) {
+								const country = feature.properties.name;
+								const count = serverCounts[country] ? serverCounts[country].length : 0;
+								return {
+									fillColor: getColor(count),
+									color: '#000',
+									weight: 1,
+									fillOpacity: 1
+								};
+							},
+						onEachFeature: onEachFeature
+						}).addTo(map);
+					})
+					.catch(error => console.error('Error al cargar el GeoJSON:', error));
+			}
+			// Define color based in server's country
+			function getColor(count) {
+				return count > 10 ? '#800026' :
+					count > 5  ? '#BD0026' :
+					count > 1  ? '#E31A1C' :
+					'#FFEDA0';
+        }
+
+				function onEachFeature (feature, layer) {
+					const country = feature.properties.name;
+					const servers = serverCounts[country] || [];
+  
+					const serverUrls = servers.map(server => server.url).join(', '); // Obtain url's
+
+					layer.on('click', function () {
+						//toggleCard(country, serversUrls)
+						alert(`País: ${country}\nServidores: ${serverUrls || 'No hay servidores'}`);
+					});
+			}
+			function toggleCard(country, servers) {
+				const card = document.getElementById("card");
+				if (card.style.display == 'none') {
+					card.style.display = 'block';
+				} else {
+					card.style.display = 'none';
+				}
+			}
+    </script>
+</body>
+</html>
