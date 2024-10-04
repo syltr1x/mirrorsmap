@@ -53,12 +53,19 @@
 					padding: 6px;
 				}
 				#close-btn > i { font-size: 25px; }
+				#sv_counter {
+					position: absolute;
+					right: 2%;
+					top: 5%;
+					translate: -50% 0%;
+				}
     </style>
 </head>
 <body>
 		<div id="card" style="display: none">
 			<button id="close-btn" onclick="toggleCard()"><i class="fa-solid fa-times"></i></button>
 			<h2 id="country"></h2>
+			<p id="sv_counter"><i class="fa-solid fa-server"></i>: <span id="sv_count"></span></p>
 			<ul id="servers">
 			</ul>
 		</div>
@@ -135,7 +142,6 @@
 
 					layer.on('click', function () {
 						toggleCard(country, servers)
-						<!--alert(`País: ${country}\nServidores: ${serverUrls || 'No hay servidores'}`);-->
 					});
 			}
 			function toggleCard(country, servers) {
@@ -143,6 +149,9 @@
 				if (card.style.display == 'none') {
 					const title = document.querySelector("#country");
 					const sv_list = document.querySelector("#servers");
+					const sv_count = document.querySelector("#sv_count");
+
+					sv_count.textContent = servers.length;
 
 					servers.forEach((server) => {
 						item = document.createElement('li')
@@ -154,7 +163,9 @@
 					card.style.display = 'flex';
 				} else {
 					const sv_list = document.querySelector("#servers");
+					const sv_count = document.querySelector("#sv_count");
 					sv_list.innerHTML = "";
+					sv_count.textContent = "";
 					card.style.display = 'none';
 				}
 			}
