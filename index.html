@@ -128,9 +128,12 @@
 			}
 			// Define color based in server's country
 			function getColor(count) {
-				return count > 10 ? '#886' :
-					count > 5  ? '#AA8' :
-					count > 3  ? '#CCA' :
+				return  count > 70 ? '#220' :
+					count > 25 ? '#442' :
+					count > 10 ? '#775' :
+					count > 5  ? '#996' :
+					count > 3  ? '#DD9' :
+					count > 0  ? '#CCB' : 
 					'#FFE';
         }
 
