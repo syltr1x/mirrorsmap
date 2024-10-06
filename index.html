@@ -181,7 +181,7 @@
 			}
 			function toggleCard(country, servers) {
 				const card = document.getElementById("card");
-				if (card.style.display == 'none') {
+				if (card.style.display == 'none' && servers !== undefined) {
 					const title = document.querySelector("#country");
 					const sv_list = document.querySelector("#servers");
 					const sv_count = document.querySelector("#sv_count");
@@ -236,6 +236,13 @@
 					card.style.display = 'none';
 				}
 			}
+
+			// Logic to close country card when press 'esc'
+			document.addEventListener('keydown', (e) => {
+				if (e.key === "Escape" || e.keyCode === 27) {
+					toggleCard()
+				}
+			})
     </script>
 </body>
 </html>
