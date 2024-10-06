@@ -190,25 +190,37 @@
 
 					servers.forEach((server) => {
 						let icon_section = document.createElement('div');
+						let http_icon = document.createElement('i')
+						// Create HTTP icon
+						http_icon.classList.add('fa-solid', 'fa-lock-open')
+						http_icon.title = "HTTP"
+
+						// Create HTTPS icon
+						let https_icon = document.createElement('i')
+						https_icon.classList.add('fa-solid', 'fa-lock')
+						https_icon.title = "HTTPS"
+
+						// Create rsync icon
+						let rsync_icon = document.createElement('i')
+						rsync_icon.classList.add('fa-solid', 'fa-rotate')
+						rsync_icon.title = "rsync"
+
+						// Add all icons
+						icon_section.appendChild(http_icon)
+						icon_section.appendChild(https_icon)
+						icon_section.appendChild(rsync_icon)
+
 						item = document.createElement('li')
 						item.innerHTML = server.url
+
 						if (server.protocol.includes("http")) {
-							let icon = document.createElement('i')
-							icon.classList.add('fa-solid', 'fa-lock-open')
-							icon.title = "http"
-							icon_section.appendChild(icon)
+							http_icon.style.color = "#3e3"
 						}
 						if (server.protocol.includes("https")) {
-							let icon = document.createElement('i')
-							icon.classList.add('fa-solid', 'fa-lock')
-							icon.title = "https"
-							icon_section.appendChild(icon)
+							https_icon.style.color = "#3e3"
 						}
 						if (server.protocol.includes("rsync")) {
-							let icon = document.createElement('i')
-							icon.classList.add('fa-solid', 'fa-rotate')
-							icon.title = "rsync"
-							icon_section.appendChild(icon)
+							rsync_icon.style.color = "#3e3"
 						}
 						item.appendChild(icon_section)
 						sv_list.appendChild(item)
